@@ -26,6 +26,7 @@ export default function SignUp() {
         body: JSON.stringify(formData),
       });
       const data = await res.json();
+      console.log(data);
       if (data.success === false) {
         setLoading(false);
         setError(data.message);
@@ -33,7 +34,7 @@ export default function SignUp() {
       }
       setLoading(false);
       setError(null);
-      navigate('/sign-in');
+      navigate('/sign-in'); 
     } catch (error) {
       setLoading(false);
       setError(error.message);
@@ -65,6 +66,7 @@ export default function SignUp() {
           id='password'
           onChange={handleChange}
         />
+
         <button
           disabled={loading}
           className='bg-slate-700 text-white p-3 rounded-lg uppercase hover:opacity-95 disabled:opacity-80'
