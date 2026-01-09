@@ -1,7 +1,7 @@
+import bcryptjs from 'bcryptjs';
 import User from '../models/user.model.js';
 import { errorHandler } from '../utils/error.js';
-import bcryptjs from 'bcryptjs';
-import Listing from '../models/listing.model.js'; // Ye line lazmi add karein listings ke liye
+import Listing from '../models/listing.model.js';
 
 export const test = (req, res) => {
   res.json({
@@ -9,11 +9,9 @@ export const test = (req, res) => {
   });
 };
 
-// --- UPDATE USER ---
 export const updateUser = async (req, res, next) => {
-  if (req.user.id !== req.params.id) 
+  if (req.user.id !== req.params.id)
     return next(errorHandler(401, 'You can only update your own account!'));
-
   try {
     if (req.body.password) {
       req.body.password = bcryptjs.hashSync(req.body.password, 10);
@@ -33,26 +31,25 @@ export const updateUser = async (req, res, next) => {
     );
 
     const { password, ...rest } = updatedUser._doc;
+
     res.status(200).json(rest);
   } catch (error) {
     next(error);
   }
 };
 
-// --- DELETE USER (Step 1) ---
 export const deleteUser = async (req, res, next) => {
   if (req.user.id !== req.params.id)
     return next(errorHandler(401, 'You can only delete your own account!'));
   try {
     await User.findByIdAndDelete(req.params.id);
-    res.clearCookie('access_token'); // Logout logic
+    res.clearCookie('access_token');
     res.status(200).json('User has been deleted!');
   } catch (error) {
     next(error);
   }
 };
 
-// --- GET USER LISTINGS (Show Listings ke liye) ---
 export const getUserListings = async (req, res, next) => {
   if (req.user.id === req.params.id) {
     try {
@@ -62,6 +59,6 @@ export const getUserListings = async (req, res, next) => {
       next(error);
     }
   } else {
-    return next(errorHandler(401, 'You can only get your own listings!'));
+    return next(errorHandler(401, 'You can only view your own listings!'));
   }
 };
